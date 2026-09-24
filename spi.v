@@ -172,7 +172,7 @@ module SPI #
     generate
         if(addressing) begin
             // Giant MUX
-            assign bus_rd = RDA[addr];
+            assign bus_rd = RDA[raddr];
         end else begin
             // tri-state buff bus
             wire [inputs*sword-1:0] trib_rd;

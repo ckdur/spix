@@ -24,7 +24,7 @@ addressing: 0,ByTristate  1,ByAGiantMux
 */
 localparam			impl = 0;
 localparam			syncing = 0;
-localparam			addressing = 0;
+localparam			addressing = 1;
 
 // Autogen localparams
 localparam numbit_address = clogb2(registers);
@@ -42,7 +42,6 @@ wire [sword*inputs - 1:0] reg_i;
 reg [sword-1:0] reg_iu [0:inputs-1];
 reg read, write;
 	
-	integer 	fd1, tmp1, ifstop;
 	integer PERIOD = 4 ;
 	integer READINGS = 140 ;
 	integer i, j, k, error;
@@ -62,7 +61,7 @@ reg read, write;
 	.CLK		(CLK),
 	.CEB		(CEB),
 	.DATA	(DATA),
-	.DOUT	(DOUT),
+	.DOUT_DAT	(DOUT),
 	.RST	(RST),
 	.R	(reg_o),
 	.RD	(reg_i)
@@ -107,11 +106,11 @@ reg read, write;
 
 
 	initial begin
-		$sdf_annotate("spib.sdf",inst_spi);
+		//$sdf_annotate("spib.sdf",inst_spi);
 		//$sdf_annotate("spine.sdf",inst_spi);
 		//$sdf_annotate("spi.sdf",inst_spi);
-		fd1 = $fopen ("data.txt","r");
-		ifstop = 0;
+		$dumpfile("dump.vcd");
+		$dumpvars(0, spi_tb);
 		CLK 	= 1'b0;
 		CEB  	= 1'b1;
 		DATA 	= 1'b0;
@@ -154,7 +153,6 @@ reg read, write;
 	always begin
 		#20;
 		#(PERIOD*2)	CEB = 1'b0;
-		tmp1 = $fscanf (fd1,"%b",reg_data);
 		DATA = write;	// For writting
 		#PERIOD;
 		DATA = read;	// For Reading
